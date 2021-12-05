@@ -22,7 +22,8 @@ class ScalaController {
   @PostMapping(Array("/makedata"))
   def generateData(@RequestBody config: UserConfig): ResponseEntity[Object] = {
     val processor:DataCreationProcessor = new DataCreationProcessor(config)
-    val result = processor.run();
+    val result = processor.runForTestingOnly(); // for testing using Postman(and unit tests)
+    //val result = processor.run();
     ResponseEntity.status(HttpStatus.OK).body(result)
   }
 }

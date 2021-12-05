@@ -1,19 +1,25 @@
 package com.schnarbiesnmeowers.testdatagen.converters
+import com.schnarbiesnmeowers.testdatagen.generators.HandleSpecialCharacters
 import com.schnarbiesnmeowers.testdatagen.posos.Record
 
-class SqlConverter(tableName: String, dataTypes: Array[String]) extends Converter {
+class SqlConverter(tableName: String, dataTypes: Array[String]) extends Converter with HandleSpecialCharacters{
 
   override def convertRecords(records: Array[Record]): Array[Byte] = {
-    records.map(rec => makeInsertStatement(rec,tableName)).mkString("\n").getBytes
+    convertRecordsToMasterString(records).getBytes
+  }
+
+  def convertRecordsToMasterString(records: Array[Record]): String = {
+    records.map(rec => makeInsertStatement(rec,tableName)).mkString("\n")
   }
 
   def makeInsertStatement(record: Record, tableName: String): String = {
     val newFieldValues = record.fieldValues.zipWithIndex.map(rec => dataTypes(rec._2) match {
-      case "RandomString" => "'" + rec._1 + "'"
-      case _ => rec._1
+      case "RandomString" => "'" + handleSpecialCharacters(rec._1,"MYSQL") + "'"
+      case _ => rec._1.length match {
+        case 0 => "null"
+        case _ => rec._1
+      }
     })
-    println(record.fields.mkString(","))
-    println(newFieldValues.mkString(","))
     "insert into " + tableName + "(" + record.fields.mkString(",") + ") values (" + newFieldValues.mkString(",") + ");"
   }
 }

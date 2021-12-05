@@ -40,7 +40,11 @@ object WholeNumberTypeGenerator extends Generator {
         case "nullable" => nullPercentage = qualifiers(i).toDouble/100
       }
     }
-    val result = padNumberWithZeros(randomLong(min,max).toString,length)
+    /*
+      TODO - offer padding in phase 2
+      val result = padNumberWithZeros(randomLong(min,max).toString,length)
+     */
+    val result = randomLong(min,max).toString
     val randomNum = randomDouble(0,1,2,"rounddown")
     if(randomNum<nullPercentage) "" else result
   }
@@ -61,7 +65,11 @@ object WholeNumberTypeGenerator extends Generator {
         case "nullable" => nullPercentage = qualifiers(i).toDouble/100
       }
     }
-    val result = padNumberWithZeros(calculateLinearRangedNum(linbase,linadd,arrayNum,fileNum).toString,length)
+    /*
+      TODO - offer padding in phase 2
+      val result = padNumberWithZeros(calculateLinearRangedNum(linbase,linadd,arrayNum,fileNum).toString,length)
+     */
+    val result = calculateLinearRangedNum(linbase,linadd,arrayNum,fileNum).toString
     val randomNum = randomDouble(0,1,2,"rounddown")
     if(randomNum<nullPercentage) "" else result
   }

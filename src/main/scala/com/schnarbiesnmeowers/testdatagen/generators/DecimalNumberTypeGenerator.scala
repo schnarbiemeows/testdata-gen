@@ -40,7 +40,11 @@ object DecimalNumberTypeGenerator extends Generator {
         case "roundhalf" => roundingType = Some("roundhalf")
       }
     }
-    val result = padNumberWithZeros(randomDouble(min,max,signDigits,roundingType.getOrElse("roundhalf")).toString,length)
+    /*
+      TODO - offer padding in phase 2
+      val result = padNumberWithZeros(randomDouble(min,max,signDigits,roundingType.getOrElse("roundhalf")).toString,length)
+     */
+    val result = randomDouble(min,max,signDigits,roundingType.getOrElse("roundhalf")).toString
     val randomNum = randomDouble(0,1,2,"rounddown")
     if(randomNum<nullPercentage) "" else result
   }
@@ -77,7 +81,11 @@ object DecimalNumberTypeGenerator extends Generator {
         case "roundhalf" => roundingType = Some("roundhalf")
       }
     }
-    val result = padNumberWithZeros(calculateLinearRangedNum(base,add,arrayNum,fileNum).toString,length)
+    /*
+      TODO - offer padding in phase 2
+      val result = padNumberWithZeros(calculateLinearRangedNum(base,add,arrayNum,fileNum).toString,length)
+     */
+    val result = calculateLinearRangedNum(base,add,arrayNum,fileNum).toString
     val randomNum = randomDouble(0,1,2,"rounddown")
     if(randomNum<nullPercentage) "" else result
   }

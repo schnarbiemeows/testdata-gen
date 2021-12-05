@@ -6,7 +6,7 @@ package com.schnarbiesnmeowers.testdatagen
 
 import com.schnarbiesnmeowers.testdatagen.posos.DataTypeFormats
 
-import java.time.format.DateTimeFormatter
+import java.time.format.{DateTimeFormatter, ResolverStyle}
 import java.time.temporal.ChronoUnit
 import java.time.{Duration, LocalDate, LocalDateTime}
 import java.util.concurrent.ThreadLocalRandom
@@ -75,7 +75,7 @@ package object generators {
   def randomAlphaNumeric(size: Int=10, chars:String = Configuration.ALPHA_NUMERIC_STRING): String = {
     val builder = new StringBuilder
     var count = size
-    while(count>0) {
+    while(count>0&&chars.length>0) {
       val character = (Math.random * chars.length).asInstanceOf[Int]
       builder.append(chars.charAt(character))
       count-=1
@@ -152,9 +152,9 @@ package object generators {
     * @return
     */
   def randomDate(start:String, end:String, format:String):String = {
-    val dateFormatter:DateTimeFormatter = DateTimeFormatter.ofPattern(format)
-    val startDate:LocalDate = LocalDate.parse(start,dateFormatter)
-    val endDate:LocalDate = LocalDate.parse(end,dateFormatter)
+    val dateFormatter:DateTimeFormatter = DateTimeFormatter.ofPattern(format)//.withResolverStyle(ResolverStyle.LENIENT)
+    val startDate:LocalDate = LocalDate.parse(start)
+    val endDate:LocalDate = LocalDate.parse(end)
     val diffInDays:Long = ChronoUnit.DAYS.between(startDate,endDate)
     val rand = new Random
     val generatedDays:Long = BigDecimal(rand.nextFloat()*diffInDays).setScale(0,BigDecimal.RoundingMode.HALF_UP).toBigInt.intValue
@@ -217,6 +217,23 @@ package object generators {
     val generatedDays:Int = BigDecimal(rand.nextFloat()*diffInDays).setScale(0,BigDecimal.RoundingMode.HALF_UP).toBigInt.intValue
     val returnDate:LocalDate = startDate.plusDays(generatedDays)
     returnDate.format(dateFormatter)
+  }
+
+  /**
+   * ths method calculates a linear value increment(like a primary key)
+   * @param basedate - the initial base value; array index 0 of file # = 0 will have this value
+   * @param format - the format of the date to return
+   * @param years - the # of years to add
+   * @param months - the number of months to add
+   * @param days - the number of days to add
+   * @param arrayNum - the index in the array for this record
+   * @param fileNum - what file number we are on
+   * @return
+   */
+  def calculateLinearRangedDate(basedate:String, format:String,years:Int, months: Int, days: Int, arrayNum:Long,fileNum:Long):String = {
+    val dateFormatter:DateTimeFormatter = DateTimeFormatter.ofPattern(format)
+    val startDate:LocalDate = LocalDate.parse(basedate,dateFormatter)
+    startDate.plusYears(arrayNum*fileNum*years).plusMonths(arrayNum*fileNum*months).plusDays(arrayNum*fileNum*days).format(dateFormatter)
   }
 
   /**
@@ -292,6 +309,34 @@ package object generators {
     val generatedSeconds:Long = BigDecimal(rand.nextFloat()*diffInSeconds).setScale(0,BigDecimal.RoundingMode.HALF_UP).longValue
     val returnDate:LocalDateTime = startDateTime.plusSeconds(generatedSeconds)
     returnDate.format(dateFormatter)
+  }
+
+  /**
+   * ths method calculates a linear value increment(like a primary key)
+   * @param basedate - the initial base value; array index 0 of file # = 0 will have this value
+   * @param format - the format of the date to return
+   * @param years - the # of years to add
+   * @param months - the number of months to add
+   * @param days - the number of days to add
+   * @param hours - the # of hours to add
+   * @param minutes - the number of minutes to add
+   * @param seconds - the number of seconds to add
+   * @param arrayNum - the index in the array for this record
+   * @param fileNum - what file number we are on
+   * @return
+   */
+  def calculateLinearRangedDateTime(basedate:String, format:String,years:Int, months: Int, days: Int,
+                                    hours: Int, minutes: Int, seconds: Int, arrayNum:Long,fileNum:Long):String = {
+    val dateFormatter:DateTimeFormatter = DateTimeFormatter.ofPattern(format)
+    val startDate:LocalDateTime = LocalDateTime.parse(basedate,dateFormatter)
+    startDate
+      .plusYears(arrayNum*fileNum*years)
+      .plusMonths(arrayNum*fileNum*months)
+      .plusDays(arrayNum*fileNum*days)
+      .plusHours(arrayNum*fileNum*hours)
+      .plusMinutes(arrayNum*fileNum*minutes)
+      .plusSeconds(arrayNum*fileNum*seconds)
+      .format(dateFormatter)
   }
 
   /**
@@ -376,26 +421,5 @@ package object generators {
       }
     }
     builder.toString
-  }
-
-  /**
-    * method that pads a money value with zeros to 2 decimal places
-    * @param input - input string to pad
-    * @return - padded string
-    */
-  def padMoneyWithZeros(input:String):String = {
-    var result:String = input
-    val totalLength:Int = input.length
-    val decimalLocation:Int = input.indexOf(".")
-    if(decimalLocation == -1) {
-      result = result.concat(".00")
-    }
-    else if(decimalLocation == totalLength-1) {
-      result = result.concat("00")
-    }
-    else if(decimalLocation == totalLength-2) {
-      result = result.concat("0")
-    }
-    result
   }
 }

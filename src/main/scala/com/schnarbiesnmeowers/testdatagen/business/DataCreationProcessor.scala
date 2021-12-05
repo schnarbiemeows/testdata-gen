@@ -34,10 +34,10 @@ class DataCreationProcessor(val userConfig: UserConfig) extends Mode {
         val recordMaker: RecordMakerCoordinator = new RecordMakerCoordinator(records)
         val generatedRecords: Array[Record] = recordMaker.generateRecords()
         val result = userConfig.getFormat match {
-          case "JSON" => new JsonConverter().convertRecords(generatedRecords)
-          case "CSV" => new DelimitedConverter(",").convertRecords(generatedRecords)
-          case "TAB" => new DelimitedConverter("\t").convertRecords(generatedRecords)
-          case "PIPE" => new DelimitedConverter("|").convertRecords(generatedRecords)
+          case "JSON" => new JsonConverter(records.dataTypes).convertRecords(generatedRecords)
+          case "CSV" => new DelimitedConverter(",",records.fields).convertRecords(generatedRecords)
+          case "TAB" => new DelimitedConverter("\t",records.fields).convertRecords(generatedRecords)
+          case "PIPE" => new DelimitedConverter("|",records.fields).convertRecords(generatedRecords)
           case "MYSQL" => new SqlConverter(records.outputFileFolder, records.dataTypes).convertRecords(generatedRecords)
         }
         result
@@ -45,6 +45,36 @@ class DataCreationProcessor(val userConfig: UserConfig) extends Mode {
       case false => {
         LogUtil.msggenMasterLoggerDEBUG("template not validated")
         Array()
+      }
+    }
+  }
+
+  def runForTestingOnly(): String = {
+    LogUtil.msggenMasterLoggerDEBUG("inside StreamingMessagesMode");
+    /**
+     * our records to generate and export
+     */
+    val records: RecordsTemplate = DataExtractor.parseUserConfiguration(userConfig)
+    // 2. validate the data
+    val templateValidated: Boolean = true //new ExcelDataSheetValidator(mode,records).validate()
+    templateValidated match {
+      case true => {
+        LogUtil.msggenMasterLoggerDEBUG("template validated")
+        // 3. read in any external files for external fields
+        val recordMaker: RecordMakerCoordinator = new RecordMakerCoordinator(records)
+        val generatedRecords: Array[Record] = recordMaker.generateRecords()
+        val result = userConfig.getFormat match {
+          case "JSON" => new JsonConverter(records.dataTypes).convertRecordsToMasterString(generatedRecords)
+          case "CSV" => new DelimitedConverter(",",records.fields).convertRecordsToMasterString(generatedRecords)
+          case "TAB" => new DelimitedConverter("\t",records.fields).convertRecordsToMasterString(generatedRecords)
+          case "PIPE" => new DelimitedConverter("|",records.fields).convertRecordsToMasterString(generatedRecords)
+          case "MYSQL" => new SqlConverter(records.outputFileFolder, records.dataTypes).convertRecordsToMasterString(generatedRecords)
+        }
+        result
+      }
+      case false => {
+        LogUtil.msggenMasterLoggerDEBUG("template not validated")
+        "error"
       }
     }
   }

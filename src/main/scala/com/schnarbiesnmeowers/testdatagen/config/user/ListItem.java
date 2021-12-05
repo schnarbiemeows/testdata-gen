@@ -49,7 +49,6 @@ public class ListItem {
     private String startdatetime;
     private String enddatetime;
     private String basedatetime;
-    private String basetimetime;
     private int inc_yr_str;
     private int inc_mth_str;
     private int inc_day_str;
@@ -66,7 +65,7 @@ public class ListItem {
                     String maxvaluestr, long minvalwhole, long maxvalwhole, boolean isranged, String basevaluestr,
                     String incrementstr, long basevalue, long increment, double minvaldecimal, double maxvaldecimal,
                     double basevaldecimal, double incrementdecimal, int signdigits, boolean hasdate, boolean hastime,
-                    String format, String startdatetime, String enddatetime, String basedatetime, String basetimetime,
+                    String format, String startdatetime, String enddatetime, String basedatetime,
                     int inc_yr_str, int inc_mth_str, int inc_day_str, int inc_hrs_str, int inc_min_str, int inc_sec_str) {
         this.customerid = customerid;
         this.dataconfigname = dataconfigname;
@@ -114,7 +113,6 @@ public class ListItem {
         this.startdatetime = startdatetime;
         this.enddatetime = enddatetime;
         this.basedatetime = basedatetime;
-        this.basetimetime = basetimetime;
         this.inc_yr_str = inc_yr_str;
         this.inc_mth_str = inc_mth_str;
         this.inc_day_str = inc_day_str;
@@ -481,14 +479,6 @@ public class ListItem {
 
     public void setBasedatetime(String basedatetime) {
         this.basedatetime = basedatetime;
-    }
-
-    public String getBasetimetime() {
-        return basetimetime;
-    }
-
-    public void setBasetimetime(String basetimetime) {
-        this.basetimetime = basetimetime;
     }
 
     public int getInc_yr_str() {

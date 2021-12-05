@@ -67,7 +67,7 @@ object DataExtractor {
       case "boolean" => getBooleanFormats(rec)
       case "datetime" => rec.isHastime match {
         case true => getDateTimeFormats(rec)
-        case _ => getDateTimeFormats(rec)
+        case _ => getDateFormats(rec)
       }
     })
   }
@@ -85,7 +85,7 @@ object DataExtractor {
       case "boolean" => getBooleanQualifiers(rec)
       case "datetime" => rec.isHastime match {
         case true => getDateTimeQualifiers(rec)
-        case _ => getDateTimeQualifiers(rec)
+        case _ => getDateQualifiers(rec)
       }
     })
   }
@@ -124,7 +124,7 @@ object DataExtractor {
    */
   def getWholeNumberFormats(record: ListItem):String = {
     /**
-     *
+     * length - padding length TODO - offer in phase 2
      * min = only for random
      * max = only for random
      * nullable
@@ -178,18 +178,59 @@ object DataExtractor {
    * @param record
    * @return
    */
-  def getDateTimeFormats(record: ListItem):String = {
+  def getDateFormats(record: ListItem):String = {
     /**
-     * start - always used
-     * end - always used
+     * start - only used for RandomDate and RandomDateTime
+     * end - only used for RandomDate and RandomDateTime
      * format - always used
      * now - not being used, I need to add the ranged data choice back to the UI
+     * basedate - only used for RangedDate and RangedDateTime
+     * incyr - only used for RangedDate and RangedDateTime
+     * incmth - only used for RangedDate and RangedDateTime
+     * incday - only used for RangedDate and RangedDateTime
      * nullable
      */
-      // TODO - add the ranged data choice to the UI and add a new RangedDate and RangedDateTime options to the back end
     record.isCanbenull match {
-      case true => "start,end,format,nullable"
-      case _ => "start,end,format"
+      case true => record.isIsranged match {
+        case true => "basedate,incyr,incmth,incday,format,nullable"
+        case _ => "start,end,format,nullable"
+      }
+      case _ => record.isIsranged match {
+        case true => "basedate,incyr,incmth,incday,format"
+        case _ => "start,end,format"
+      }
+    }
+  }
+
+  /**
+   *
+   * @param record
+   * @return
+   */
+  def getDateTimeFormats(record: ListItem):String = {
+    /**
+     * start - only used for RandomDate and RandomDateTime
+     * end - only used for RandomDate and RandomDateTime
+     * format - always used
+     * now - not being used, I need to add the ranged data choice back to the UI
+     * basedate - only used for RangedDate and RangedDateTime
+     * incyr - only used for RangedDate and RangedDateTime
+     * incmth - only used for RangedDate and RangedDateTime
+     * incday - only used for RangedDate and RangedDateTime
+     * inchr - only used for RangedDate and RangedDateTime
+     * incmin - only used for RangedDate and RangedDateTime
+     * incsec - only used for RangedDate and RangedDateTime
+     * nullable
+     */
+    record.isCanbenull match {
+      case true => record.isIsranged match {
+        case true => "basedate,incyr,incmth,incday,inchr,incmin,incsec,format,nullable"
+        case _ => "start,end,format,nullable"
+      }
+      case _ => record.isIsranged match {
+        case true => "basedate,incyr,incmth,incday,inchr,incmin,incsec,format"
+        case _ => "start,end,format"
+      }
     }
   }
 
@@ -245,7 +286,7 @@ object DataExtractor {
    */
   def getWholeNumberQualifiers(record: ListItem):Array[String] = {
     /**
-     *
+     * length - padding length TODO - offer in phase 2
      * min = only for random
      * max = only for random
      * nullable
@@ -299,18 +340,67 @@ object DataExtractor {
    * @param record
    * @return
    */
-  def getDateTimeQualifiers(record: ListItem):Array[String] = {
+  def getDateQualifiers(record: ListItem):Array[String] = {
     /**
-     * start - always used
-     * end - always used
+     * start - only used for RandomDate and RandomDateTime
+     * end - only used for RandomDate and RandomDateTime
      * format - always used
      * now - not being used, I need to add the ranged data choice back to the UI
+     * basedate - only used for RangedDate and RangedDateTime
+     * incyr - only used for RangedDate and RangedDateTime
+     * incmth - only used for RangedDate and RangedDateTime
+     * incday - only used for RangedDate and RangedDateTime
      * nullable
      */
-    // TODO - add the ranged data choice to the UI and add a new RangedDate and RangedDateTime options to the back end
     record.isCanbenull match {
-      case true => Array(record.getStartdatetime,record.getEnddatetime,record.getFormat,record.getNullpercent.toString)//"start,end,format,nullable"
-      case _ => Array(record.getStartdatetime,record.getEnddatetime,record.getFormat)//"start,end,format"
+      case true => record.isIsranged match {
+        case true => Array(record.getBasedatetime,record.getInc_yr_str.toString,record.getInc_mth_str.toString,
+          record.getInc_day_str.toString,record.getFormat,record.getNullpercent.toString)
+        // "basedate,incyr,incmth,incday,format,nullable"
+        case _ => Array(record.getStartdatetime,record.getEnddatetime,record.getFormat,record.getNullpercent.toString)
+      }
+      case _ => record.isIsranged match {
+        case true => Array(record.getBasedatetime,record.getInc_yr_str.toString,record.getInc_mth_str.toString,
+          record.getInc_day_str.toString,record.getFormat)
+        case _ => Array(record.getStartdatetime,record.getEnddatetime,record.getFormat)
+      }
+    }
+  }
+
+  /**
+   *
+   * @param record
+   * @return
+   */
+  def getDateTimeQualifiers(record: ListItem):Array[String] = {
+    /**
+     * start - only used for RandomDate and RandomDateTime
+     * end - only used for RandomDate and RandomDateTime
+     * format - always used
+     * now - not being used, I need to add the ranged data choice back to the UI
+     * basedate - only used for RangedDate and RangedDateTime
+     * incyr - only used for RangedDate and RangedDateTime
+     * incmth - only used for RangedDate and RangedDateTime
+     * incday - only used for RangedDate and RangedDateTime
+     * inchr - only used for RangedDate and RangedDateTime
+     * incmin - only used for RangedDate and RangedDateTime
+     * incsec - only used for RangedDate and RangedDateTime
+     * nullable
+     */
+    record.isCanbenull match {
+      case true => record.isIsranged match {
+        case true => Array(record.getBasedatetime,record.getInc_yr_str.toString,record.getInc_mth_str.toString,
+          record.getInc_day_str.toString,record.getInc_hrs_str.toString,record.getInc_min_str.toString,
+          record.getInc_sec_str.toString,record.getFormat,record.getNullpercent.toString)
+        // "basedate,incyr,incmth,incday,format,nullable"
+        case _ => Array(record.getStartdatetime,record.getEnddatetime,record.getFormat,record.getNullpercent.toString)
+      }
+      case _ => record.isIsranged match {
+        case true => Array(record.getBasedatetime,record.getInc_yr_str.toString,record.getInc_mth_str.toString,
+          record.getInc_day_str.toString,record.getInc_hrs_str.toString,record.getInc_min_str.toString,
+          record.getInc_sec_str.toString,record.getFormat)
+        case _ => Array(record.getStartdatetime,record.getEnddatetime,record.getFormat)
+      }
     }
   }
 
