@@ -11,12 +11,17 @@ import org.springframework.web.bind.annotation.{CrossOrigin, GetMapping, PostMap
 @RequestMapping(Array("/testdata-gen"))
 class ScalaController {
 
-  @GetMapping(Array("/config"))
+  /*@GetMapping(Array("/config"))
   def getInitialConfig(): ResponseEntity[Object] = {
     val config = new InitialConfig
     println(s"returning config with: ${config.stringOps.minlength} for minlength and ${config.stringOps.maxlength} for maxlength")
     println(config.dateTimeOps.getDateFormats())
     ResponseEntity.status(HttpStatus.OK).body(config)
+  }*/
+
+  @GetMapping(Array("/healthcheck"))
+  def healthcheck(): String = {
+    "hello from testdata-gen!"
   }
 
   @PostMapping(Array("/makedata"))
