@@ -232,8 +232,9 @@ package object generators {
    */
   def calculateLinearRangedDate(basedate:String, format:String,years:Int, months: Int, days: Int, arrayNum:Long,fileNum:Long):String = {
     val dateFormatter:DateTimeFormatter = DateTimeFormatter.ofPattern(format)
-    val startDate:LocalDate = LocalDate.parse(basedate,dateFormatter)
-    startDate.plusYears(arrayNum*fileNum*years).plusMonths(arrayNum*fileNum*months).plusDays(arrayNum*fileNum*days).format(dateFormatter)
+    val startDate:LocalDate = LocalDate.parse(basedate)
+    val newDate = startDate.plusYears(arrayNum*years).plusMonths(arrayNum*months).plusDays(arrayNum*days)
+    newDate.format(dateFormatter)
   }
 
   /**
@@ -245,8 +246,8 @@ package object generators {
     */
   def randomDateTime(start:String, end:String, format:String):String = {
     val dateFormatter:DateTimeFormatter = DateTimeFormatter.ofPattern(format)
-    val startDateTime:LocalDateTime = LocalDateTime.parse(start,dateFormatter)
-    val endDateTime:LocalDateTime = LocalDateTime.parse(end,dateFormatter)
+    val startDateTime:LocalDateTime = LocalDateTime.parse(start+"T00:00:00")
+    val endDateTime:LocalDateTime = LocalDateTime.parse(end+"T23:59:59")
     val diffInSeconds:Long = Duration.between(startDateTime,endDateTime).getSeconds
     val rand = new Random
     val generatedSeconds:Long = BigDecimal(rand.nextFloat()*diffInSeconds).setScale(0,BigDecimal.RoundingMode.HALF_UP).longValue
@@ -328,14 +329,14 @@ package object generators {
   def calculateLinearRangedDateTime(basedate:String, format:String,years:Int, months: Int, days: Int,
                                     hours: Int, minutes: Int, seconds: Int, arrayNum:Long,fileNum:Long):String = {
     val dateFormatter:DateTimeFormatter = DateTimeFormatter.ofPattern(format)
-    val startDate:LocalDateTime = LocalDateTime.parse(basedate,dateFormatter)
+    val startDate:LocalDateTime = LocalDateTime.parse(basedate+"T00:00:00")
     startDate
-      .plusYears(arrayNum*fileNum*years)
-      .plusMonths(arrayNum*fileNum*months)
-      .plusDays(arrayNum*fileNum*days)
-      .plusHours(arrayNum*fileNum*hours)
-      .plusMinutes(arrayNum*fileNum*minutes)
-      .plusSeconds(arrayNum*fileNum*seconds)
+      .plusYears(arrayNum*years)
+      .plusMonths(arrayNum*months)
+      .plusDays(arrayNum*days)
+      .plusHours(arrayNum*hours)
+      .plusMinutes(arrayNum*minutes)
+      .plusSeconds(arrayNum*seconds)
       .format(dateFormatter)
   }
 

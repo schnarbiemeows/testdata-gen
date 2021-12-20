@@ -21,8 +21,9 @@ import scala.collection.mutable.ArrayBuffer
 
   */
 class GenericRecordsTemplate(val numfiles:Int, val numrecords:Int,val outputFileFolder:String, val filetype: String,
-                             val fields: Array[String], val dataTypes: Array[String], val dataFormats: Array[String],
-                             val dataQualifiers: Array[Array[String]],var records: ArrayBuffer[Record] ) extends RecordsTemplate {
+                             val fields: Array[String], val dataTypes: Array[String], val dateTimeFormats: Array[String],
+                             val dataFormats: Array[String], val dataQualifiers: Array[Array[String]],
+                             var records: ArrayBuffer[Record] ) extends RecordsTemplate {
   /**
     * the names of the fields we are generating records for
     */

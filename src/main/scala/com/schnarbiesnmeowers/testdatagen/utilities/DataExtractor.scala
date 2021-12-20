@@ -13,14 +13,16 @@ object DataExtractor {
   def parseUserConfiguration(config: UserConfig): RecordsTemplate = {
     println("DataExtractor object worked")
     val fieldNames = getFieldNames(config)
-    val dataTypes = getDataTypes(config)
+    val dataTypesAndDateTimeFormats:Array[Tuple2[String,String]] = getDataTypes(config)
+    val dataTypes:Array[String] = dataTypesAndDateTimeFormats.map(rec => rec._1)
+    val dateTimeFormats:Array[String] = dataTypesAndDateTimeFormats.map(rec => rec._2)
     val distinctValues = getDistinctCounts(config)  // TODO - disabling this for now
     val formats = getFormats(config)
     val qualifiers = getQualifiers(config)
     config.getFields.foreach(println)
     var records: ArrayBuffer[Record] = ArrayBuffer()
     val template:GenericRecordsTemplate = new GenericRecordsTemplate(config.getNumfiles,config.getNumrecords,config.getFilename,config.getFormat,
-      fieldNames, dataTypes, formats, qualifiers, records)
+      fieldNames, dataTypes, dateTimeFormats, formats, qualifiers, records)
     template
   }
 
@@ -28,18 +30,27 @@ object DataExtractor {
     config.getFields.map(rec => rec.getDataname)
   }
 
-  def getDataTypes(config: UserConfig):Array[String] = {
+  def getDataTypes(config: UserConfig):Array[Tuple2[String,String]] = {
     config.getFields.map(rec => rec.getDatatype match {
-      case "string" => "RandomString"
+      case "string" => ("RandomString","none")
       case "whole" => rec.isIsranged match {
-        case true => "RangedLong"
-        case _ => "RandomLong"
+        case true => ("RangedLong","none")
+        case _ => ("RandomLong","none")
       }
-      case "number" => "RandomDouble"
-      case "boolean" => "RandomBoolean"
+      case "number" => rec.isIsranged match {
+        case true => ("RangedDouble","none")
+        case _ => ("RandomDouble","none")
+      }
+      case "boolean" => ("RandomBoolean","none")
       case "datetime" => rec.isHastime match {
-        case true => "RandomDateTime"
-        case _ => "RandomDate"
+        case true => rec.isIsranged match {
+          case true=> ("RangedDateTime",rec.getFormat)
+          case _ => ("RandomDateTime",rec.getFormat)
+        }
+        case _ => rec.isIsranged match {
+          case true=> ("RangedDate",rec.getFormat)
+          case _ => ("RandomDate",rec.getFormat)
+        }
       }
     })
   }

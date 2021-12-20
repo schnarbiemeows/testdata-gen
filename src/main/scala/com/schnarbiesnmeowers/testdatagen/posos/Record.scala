@@ -11,9 +11,9 @@ trait Record {
 
   val fields:Array[String]
   val fieldValues:Array[String]
-  val open:String = "{"
+  /*val open:String = "{"
   val closed:String = "}"
-  val quotes = "\""
+  val quotes = "\""*/
 
   /**
     * method that will return the rows values as a comma separated String

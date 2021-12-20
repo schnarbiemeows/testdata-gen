@@ -5,6 +5,7 @@
 package com.schnarbiesnmeowers.testdatagen.generators
 
 import scala.collection.mutable.ArrayBuffer
+import scala.math.BigDecimal
 
 object DecimalNumberTypeGenerator extends Generator {
 
@@ -85,7 +86,7 @@ object DecimalNumberTypeGenerator extends Generator {
       TODO - offer padding in phase 2
       val result = padNumberWithZeros(calculateLinearRangedNum(base,add,arrayNum,fileNum).toString,length)
      */
-    val result = calculateLinearRangedNum(base,add,arrayNum,fileNum).toString
+    val result = calculateLinearRangedNum(base,add,signDigits,arrayNum,fileNum).toString
     val randomNum = randomDouble(0,1,2,"rounddown")
     if(randomNum<nullPercentage) "" else result
   }
@@ -98,9 +99,8 @@ object DecimalNumberTypeGenerator extends Generator {
    * @param fileNum - what file number we are on
    * @return
    */
-  def calculateLinearRangedNum(linbase:Double,linadd:Double,arrayNum:Long,fileNum:Long):Double = {
-    //val numRecordsPerFile:Long = PropertyLoader.getProperty(Configuration.MODE4_NUM_RECORDS).toLong
-    //linbase+linadd*fileNum*numRecordsPerFile+linadd*arrayNum
-    linbase+linadd*arrayNum
+  def calculateLinearRangedNum(linbase:Double,linadd:Double,signDigits:Int,arrayNum:Long,fileNum:Long):Double = {
+    BigDecimal(linbase+linadd*arrayNum).setScale(signDigits, BigDecimal.RoundingMode.DOWN).toDouble
+    //linbase+linadd*arrayNum
   }
 }

@@ -34,11 +34,11 @@ class DataCreationProcessor(val userConfig: UserConfig) extends Mode {
         val recordMaker: RecordMakerCoordinator = new RecordMakerCoordinator(records)
         val generatedRecords: Array[Record] = recordMaker.generateRecords()
         val result = userConfig.getFormat match {
-          case "JSON" => new JsonConverter(records.dataTypes).convertRecords(generatedRecords)
-          case "CSV" => new DelimitedConverter(",",records.fields).convertRecords(generatedRecords)
-          case "TAB" => new DelimitedConverter("\t",records.fields).convertRecords(generatedRecords)
-          case "PIPE" => new DelimitedConverter("|",records.fields).convertRecords(generatedRecords)
-          case "MYSQL" => new SqlConverter(records.outputFileFolder, records.dataTypes).convertRecords(generatedRecords)
+          case "JSON" => new JsonConverter(records).convertRecords(generatedRecords)
+          case "CSV" => new DelimitedConverter(",",records).convertRecords(generatedRecords)
+          case "TAB" => new DelimitedConverter("\t",records).convertRecords(generatedRecords)
+          case "PIPE" => new DelimitedConverter("|",records).convertRecords(generatedRecords)
+          case "MYSQL" => new SqlConverter(records).convertRecords(generatedRecords)
         }
         result
       }
@@ -64,11 +64,11 @@ class DataCreationProcessor(val userConfig: UserConfig) extends Mode {
         val recordMaker: RecordMakerCoordinator = new RecordMakerCoordinator(records)
         val generatedRecords: Array[Record] = recordMaker.generateRecords()
         val result = userConfig.getFormat match {
-          case "JSON" => new JsonConverter(records.dataTypes).convertRecordsToMasterString(generatedRecords)
-          case "CSV" => new DelimitedConverter(",",records.fields).convertRecordsToMasterString(generatedRecords)
-          case "TAB" => new DelimitedConverter("\t",records.fields).convertRecordsToMasterString(generatedRecords)
-          case "PIPE" => new DelimitedConverter("|",records.fields).convertRecordsToMasterString(generatedRecords)
-          case "MYSQL" => new SqlConverter(records.outputFileFolder, records.dataTypes).convertRecordsToMasterString(generatedRecords)
+          case "JSON" => new JsonConverter(records).convertRecordsToMasterString(generatedRecords)
+          case "CSV" => new DelimitedConverter(",",records).convertRecordsToMasterString(generatedRecords)
+          case "TAB" => new DelimitedConverter("\t",records).convertRecordsToMasterString(generatedRecords)
+          case "PIPE" => new DelimitedConverter("|",records).convertRecordsToMasterString(generatedRecords)
+          case "MYSQL" => new SqlConverter(records).convertRecordsToMasterString(generatedRecords)
         }
         result
       }

@@ -6,4 +6,5 @@ object Constants {
   val lowers = "abcdefghijklmnopqrstuvwxyz"
   val number = "0123456789"
   val specials = "!@#$%^&*()_-+={}[]|\\<>?,./~`:;\"'"
+
 }

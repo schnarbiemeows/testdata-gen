@@ -41,6 +41,12 @@ trait RecordsTemplate {
     * RandomLocalTime
     */
   val dataTypes:Array[String]
+
+  /**
+   * for Date and DateTime fields, the specific formatting of the field
+   * for other data types, this value will be "none"
+   */
+  val dateTimeFormats: Array[String]
   /**
     * any special formatting we need
     */

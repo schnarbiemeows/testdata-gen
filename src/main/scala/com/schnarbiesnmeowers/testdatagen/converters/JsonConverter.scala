@@ -1,8 +1,8 @@
 package com.schnarbiesnmeowers.testdatagen.converters
 import com.schnarbiesnmeowers.testdatagen.generators.HandleSpecialCharacters
-import com.schnarbiesnmeowers.testdatagen.posos.Record
+import com.schnarbiesnmeowers.testdatagen.posos.{Record, RecordsTemplate}
 
-class JsonConverter(val dataTypes:Array[String]) extends Converter with HandleSpecialCharacters {
+class JsonConverter(template:RecordsTemplate) extends Converter with HandleSpecialCharacters {
   override def convertRecords(records: Array[Record]): Array[Byte] = {
     convertRecordsToMasterString(records).getBytes
   }
@@ -19,15 +19,24 @@ class JsonConverter(val dataTypes:Array[String]) extends Converter with HandleSp
     val builder:StringBuilder = new StringBuilder().append("{ ")
     var count:Int = 0
     while(count<record.fields.length) {
-      dataTypes(count) match {
+      template.dataTypes(count) match {
         case "RandomString" | "EnumString" | "EnumDate" | "RandomDate" | "RangedDate" |
              "EnumDateTime" | "RandomDateTime" | "RangedDateTime" => {
-          if(count==0) {
-            builder.append("\"").append(record.fields(count)).append("\" : \"")
-              .append(handleSpecialCharacters(record.fieldValues(count),"JSON")).append("\" ")
-          } else {
-            builder.append(", \"").append(record.fields(count)).append("\" : \"")
-              .append(handleSpecialCharacters(record.fieldValues(count), "JSON")).append("\" ")
+          count match {
+            case 0 => {
+              record.fieldValues(count) match {
+                case "" => builder.append("\"").append(record.fields(count)).append("\" : null ")
+                case _ => builder.append("\"").append(record.fields(count)).append("\" : \"")
+                  .append(handleSpecialCharacters(record.fieldValues(count),"JSON")).append("\" ")
+              }
+            }
+            case _ => {
+              record.fieldValues(count) match {
+                case "" => builder.append(", \"").append(record.fields(count)).append("\" : null ")
+                case _ => builder.append(", \"").append(record.fields(count)).append("\" : \"")
+                  .append(handleSpecialCharacters(record.fieldValues(count), "JSON")).append("\" ")
+              }
+            }
           }
         }
         case _ => {

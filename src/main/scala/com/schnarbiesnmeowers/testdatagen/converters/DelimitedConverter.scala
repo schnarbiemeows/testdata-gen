@@ -1,8 +1,8 @@
 package com.schnarbiesnmeowers.testdatagen.converters
 import com.schnarbiesnmeowers.testdatagen.generators.HandleSpecialCharacters
-import com.schnarbiesnmeowers.testdatagen.posos.Record
+import com.schnarbiesnmeowers.testdatagen.posos.{Record, RecordsTemplate}
 
-class DelimitedConverter(val delimiter: String,val fieldNames: Array[String]) extends Converter with HandleSpecialCharacters {
+class DelimitedConverter(val delimiter: String,template:RecordsTemplate) extends Converter with HandleSpecialCharacters {
 
   override def convertRecords(records: Array[Record]): Array[Byte] = {
     convertRecordsToMasterString(records).getBytes
@@ -20,7 +20,10 @@ class DelimitedConverter(val delimiter: String,val fieldNames: Array[String]) ex
    * @return - String
    */
   def makeDelimtedRecord(record: Record, delimiter: String):String = {
-    record.fieldValues.map(rec => handleSpecialCharacters(rec,delimiter)).mkString(delimiter)
+    record.fieldValues.map(rec => rec.length match {
+      case 0 => "null"
+      case _ => handleSpecialCharacters(rec,delimiter)
+    }).mkString(delimiter)
   }
 
   /**
@@ -30,9 +33,9 @@ class DelimitedConverter(val delimiter: String,val fieldNames: Array[String]) ex
    */
   def makeHeader():String = {
     delimiter match {
-      case "," => fieldNames.mkString(",")+"\n"
-      case "\t" => fieldNames.mkString("\t")+"\n"
-      case "|" => fieldNames.mkString("|")+"\n"
+      case "," => template.fields.mkString(",")+"\n"
+      case "\t" => template.fields.mkString("\t")+"\n"
+      case "|" => template.fields.mkString("|")+"\n"
     }
   }
 
